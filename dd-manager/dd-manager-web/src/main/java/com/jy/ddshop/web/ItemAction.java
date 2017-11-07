@@ -1,7 +1,13 @@
 package com.jy.ddshop.web;
 
+import com.jy.ddshop.common.dto.Page;
+import com.jy.ddshop.common.dto.Result;
 import com.jy.ddshop.pojo.po.TbItem;
+import com.jy.ddshop.pojo.vo.TbItemCustom;
 import com.jy.ddshop.service.ItemService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -20,6 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Scope("prototype")
 public class ItemAction {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private ItemService itemService;
 
@@ -32,5 +40,18 @@ public class ItemAction {
         return tbItem;
     }
 
+
+    @ResponseBody
+    @RequestMapping("/items")
+    public Result<TbItemCustom> listItemsByPage(Page page){
+        Result<TbItemCustom> list = null;
+        try {
+            list = itemService.listItemsByPage(page);
+        }catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
+        return list;
+    }
 
 }

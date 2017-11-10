@@ -1,10 +1,12 @@
 package com.jy.ddshop.service.impl;
 
+import com.jy.ddshop.common.dto.Order;
 import com.jy.ddshop.common.dto.Page;
 import com.jy.ddshop.common.dto.Result;
 import com.jy.ddshop.dao.TbItemCustomMapper;
 import com.jy.ddshop.dao.TbItemMapper;
 import com.jy.ddshop.pojo.po.TbItem;
+import com.jy.ddshop.pojo.po.TbItemExample;
 import com.jy.ddshop.pojo.vo.TbItemCustom;
 import com.jy.ddshop.service.ItemService;
 import org.slf4j.Logger;
@@ -37,8 +39,9 @@ public class ItemServiceImpl implements ItemService {
         return tbItem;
     }
 
+    //列表分页
     @Override
-    public Result<TbItemCustom> listItemsByPage(Page page) {
+    public Result<TbItemCustom> listItemsByPage(Page page, Order order) {
         Result<TbItemCustom> result = null;
         try {
             //1 创建一个响应参数实体类
@@ -47,12 +50,77 @@ public class ItemServiceImpl implements ItemService {
             int total = itemCustomDao.countItems();
             result.setTotal(total);
             //3 对rows进行设值(指定页码显示记录集合)
-            List<TbItemCustom> list = itemCustomDao.listItemsByPage(page);
+            List<TbItemCustom> list = itemCustomDao.listItemsByPage(page,order);
             result.setRows(list);
         }catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
         }
         return result;
+    }
+
+
+    //删除，其实只是修改状态
+    @Override
+    public int updateBatch(List<Long> ids) {
+        int i = 0;
+        try {
+            //准备商品对象，这个对象包含了状态为3的字段
+            TbItem record = new TbItem();
+            record.setStatus((byte)3);
+            //创建更新模板
+            TbItemExample example = new TbItemExample();
+            TbItemExample.Criteria criteria = example.createCriteria();
+            criteria.andIdIn(ids);
+            //执行修改
+            i = itemDao.updateByExampleSelective(record,example);
+        }catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
+
+       return i;
+    }
+
+    @Override
+    public int updateDown(List<Long> ids) {
+        int i = 0;
+        try {
+            //准备商品对象，这个对象包含了状态为3的字段
+            TbItem record = new TbItem();
+            record.setStatus((byte)2);
+            //创建更新模板
+            TbItemExample example = new TbItemExample();
+            TbItemExample.Criteria criteria = example.createCriteria();
+            criteria.andIdIn(ids);
+            //执行修改
+            i = itemDao.updateByExampleSelective(record,example);
+        }catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
+
+        return i;
+    }
+
+    @Override
+    public int updateUp(List<Long> ids) {
+        int i = 0;
+        try {
+            //准备商品对象，这个对象包含了状态为3的字段
+            TbItem record = new TbItem();
+            record.setStatus((byte)1);
+            //创建更新模板
+            TbItemExample example = new TbItemExample();
+            TbItemExample.Criteria criteria = example.createCriteria();
+            criteria.andIdIn(ids);
+            //执行修改
+            i = itemDao.updateByExampleSelective(record,example);
+        }catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
+
+        return i;
     }
 }

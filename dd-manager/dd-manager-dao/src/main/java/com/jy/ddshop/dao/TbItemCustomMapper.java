@@ -3,8 +3,10 @@ package com.jy.ddshop.dao;
 
 
 
+import com.jy.ddshop.common.dto.Order;
 import com.jy.ddshop.common.dto.Page;
 import com.jy.ddshop.pojo.vo.TbItemCustom;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -27,5 +29,5 @@ public interface TbItemCustomMapper {
      * @param page
      * @return
      */
-    List<TbItemCustom> listItemsByPage(Page page);
+    List<TbItemCustom> listItemsByPage(@Param("page") Page page, @Param("order") Order order);
 }

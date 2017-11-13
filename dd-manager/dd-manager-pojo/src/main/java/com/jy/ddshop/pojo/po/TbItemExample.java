@@ -11,6 +11,7 @@ public class TbItemExample {
 
     protected List<Criteria> oredCriteria;
 
+
     public TbItemExample() {
         oredCriteria = new ArrayList<Criteria>();
     }

@@ -98,4 +98,18 @@ public class ItemAction {
         return i;
     }
 
+
+    //保存商品
+    @ResponseBody
+    @RequestMapping("/item")
+    public int saveItem(TbItem tbItem, String desc){
+        int i = 0;
+        try {
+            i = itemService.saveItem(tbItem,desc);
+        }catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
+        return i;
+    }
 }

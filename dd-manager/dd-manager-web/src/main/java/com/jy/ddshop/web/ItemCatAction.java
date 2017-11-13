@@ -26,6 +26,13 @@ public class ItemCatAction {
     @RequestMapping("/itemCats")
     @ResponseBody
     public List<TreeNode> listItemCats(@RequestParam("parentId") Long parentId){
-        return itemCatService.listItemCats(parentId);
+        List<TreeNode> list = null;
+        try {
+            list = itemCatService.listItemCats(parentId);
+        }catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
+        return list;
     }
 }

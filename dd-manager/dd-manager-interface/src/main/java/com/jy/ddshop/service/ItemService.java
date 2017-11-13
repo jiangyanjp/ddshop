@@ -20,9 +20,33 @@ public interface ItemService {
 
     Result<TbItemCustom> listItemsByPage(Page page, Order order, TbItemQuery query);
 
+    /**
+     * 删除商品，实则是改变商品状态，不是真的删除
+     * @param ids 要删除的商品id数组
+     * @return
+     */
     int updateBatch(List<Long> ids);
+
+    /**
+     * 下架
+     * @param ids 要下架的商品id数组
+     * @return
+     */
 
     int updateDown(List<Long> ids);
 
+    /**
+     * 上架
+     * @param ids 要上架的商品id数组
+     * @return
+     */
     int updateUp(List<Long> ids);
+
+    /**
+     * 新增商品
+     * @param tbItem 商品信息
+     * @param desc 商品描述
+     * @return
+     */
+    int saveItem(TbItem tbItem, String desc);
 }

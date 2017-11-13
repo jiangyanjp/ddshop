@@ -23,6 +23,9 @@ var ddshop = {
                 closable:true
             });
         }
+    },
+    closeTabs:function(text){
+        $('#tab').tabs('close',text);
     }
 
 };

@@ -1,11 +1,14 @@
 package com.jy.ddshop.service.impl;
 
+import com.jy.ddshop.common.util.IDUtils;
 import com.jy.ddshop.common.dto.Order;
 import com.jy.ddshop.common.dto.Page;
 import com.jy.ddshop.common.dto.Result;
 import com.jy.ddshop.dao.TbItemCustomMapper;
+import com.jy.ddshop.dao.TbItemDescMapper;
 import com.jy.ddshop.dao.TbItemMapper;
 import com.jy.ddshop.pojo.po.TbItem;
+import com.jy.ddshop.pojo.po.TbItemDesc;
 import com.jy.ddshop.pojo.po.TbItemExample;
 import com.jy.ddshop.pojo.vo.TbItemCustom;
 import com.jy.ddshop.pojo.vo.TbItemQuery;
@@ -14,7 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +40,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private TbItemCustomMapper itemCustomDao;
+
+    @Autowired
+    private TbItemDescMapper itemDescDao;
 
     @Override
     public TbItem getById(Long itemId) {
@@ -86,7 +94,6 @@ public class ItemServiceImpl implements ItemService {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
         }
-
        return i;
     }
 
@@ -107,7 +114,6 @@ public class ItemServiceImpl implements ItemService {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
         }
-
         return i;
     }
 
@@ -128,7 +134,36 @@ public class ItemServiceImpl implements ItemService {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
         }
+        return i;
+    }
 
+
+    @Transactional
+    @Override
+    public int saveItem(TbItem tbItem, String desc) {
+
+        int i = 0;
+        try {
+            //这个方法需要处理两张表 tb_item 和 tb_item_desc
+            //调用工具类生成商品ID
+            Long id = IDUtils.getItemId();
+            //处理tb_item
+            tbItem.setId(id);
+            tbItem.setStatus((byte)1);
+            tbItem.setCreated(new Date());
+            tbItem.setUpdated(new Date());
+            i = itemDao.insert(tbItem);
+            //处理tb_item_desc
+            TbItemDesc itemDesc = new TbItemDesc();
+            itemDesc.setItemId(id);
+            itemDesc.setItemDesc(desc);
+            itemDesc.setCreated(new Date());
+            itemDesc.setUpdated(new Date());
+            i += itemDescDao.insert(itemDesc);
+        }catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
         return i;
     }
 }

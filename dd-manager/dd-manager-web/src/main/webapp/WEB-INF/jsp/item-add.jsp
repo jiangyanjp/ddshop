@@ -47,7 +47,8 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <script id="container" name="content" type="text/plain">商品描述</script>
+                    <!-- 加载编辑器的容器 -->
+                    <script id="container" name="desc" type="text/plain">商品描述</script>
                 </td>
             </tr>
             <tr class="paramsShow" style="display: none;">
@@ -72,6 +73,36 @@
 </div>
 
 <script>
+    //提交表单
+    function submitForm() {
+        $('#itemAddForm').form('submit',{
+            url:'item',
+            onSubmit:function(){
+                //给隐藏域设值ID属性，并且设值
+                $('#price').val($('#priceView').val()*100);
+                return $(this).form('validate');
+            },
+            success:function(data){
+                //console.log('success');
+                if(data > 0){
+                    $.messager.alert('消息','保存成功','info');
+                    ddshop.addTabs('查询商品','item-list');
+                    //保存成功之后打开查询商品面板，关闭新增商品面板
+                    ddshop.closeTabs('新增商品');
+                }
+            }
+        });
+    }
+
+    //重置表单
+    function clearForm(){
+        $('#itemAddForm').form('reset');
+        ue.setContent('商品描述');
+    }
+
+    // 实例化编辑器
+    var ue = UE.getEditor('container');
+
     //加载商品类目的树形下拉框
     $('#cid').combotree({
         url: 'itemCats?parentId=0',
